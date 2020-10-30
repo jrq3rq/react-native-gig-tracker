@@ -18,12 +18,12 @@ const App = () => {
   const [amount, setAmount] = useState("");
   const [total, setTotal] = useState(0);
   const [data, setData] = useState([
-    { data: moment().format("LL"), amount: 200 },
-    { data: moment().subtract(1, "days").format("LL"), amount: 2500 },
-    { data: moment().subtract(1, "days").format("LL"), amount: 3500 },
-    { data: moment().subtract(1, "days").format("LL"), amount: 4500 },
-    { data: moment().subtract(2, "days").format("LL"), amount: 5500 },
-    { data: moment().subtract(2, "days").format("LL"), amount: 5500 },
+    { date: moment().format("LL"), amount: 200 },
+    { date: moment().subtract(1, "days").format("LL"), amount: 2500 },
+    { date: moment().subtract(1, "days").format("LL"), amount: 3500 },
+    { date: moment().subtract(1, "days").format("LL"), amount: 4500 },
+    { date: moment().subtract(2, "days").format("LL"), amount: 5500 },
+    { date: moment().subtract(2, "days").format("LL"), amount: 5500 },
   ]);
 
   const groupBy = (array, key) =>
@@ -45,7 +45,7 @@ const App = () => {
   const transformData = (groupedData) => {
     const transformedArray = [];
 
-    groupedData.forEach((entry) => {
+    Object.entries(groupedData).forEach((entry) => {
       const total = entry[1].map((pair) => pair.amount);
       transformedArray.push({ date: entry[0], amount: total });
     });
