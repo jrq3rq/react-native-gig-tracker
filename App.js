@@ -11,13 +11,26 @@ import {
 } from "react-native";
 import Todo from "./Todo";
 import { LineChart, BarChart } from "react-native-chart-kit";
+import moment from "moment";
 
 const App = () => {
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [total, setTotal] = useState(0);
-  const [label, setLabels] = useState([]);
-  const [dataPoints, setDataPoints] = useState([]);
+  const [data, setData] = useState([
+    { data: moment().format("LL"), amount: 200 },
+    { data: moment().subtract(1, "days").format("LL"), amount: 2500 },
+    { data: moment().subtract(1, "days").format("LL"), amount: 3500 },
+    { data: moment().subtract(1, "days").format("LL"), amount: 4500 },
+    { data: moment().subtract(2, "days").format("LL"), amount: 5500 },
+    { data: moment().subtract(2, "days").format("LL"), amount: 5500 },
+  ]);
+
+  const groupBy = (array, key) =>
+    array.reduce((rv, x) => {
+      (rv[x[key]] = rv[x[key]] || []).push(x);
+      return rv;
+    }, {});
 
   const [gigs, setGigs] = useState([
     {
@@ -25,12 +38,20 @@ const App = () => {
       amount: 999.99,
       timestamp: new Date(),
     },
-    {
-      description: "Freelance partial build",
-      amount: 350.99,
-      timestamp: new Date(),
-    },
   ]);
+
+  const getDates = () => data.map((pair) => pair.date);
+  const getAmounts = () => data.map((pair) => pair.amount);
+  const transformData = (groupedData) => {
+    const transformedArray = [];
+
+    groupedData.forEach((entry) => {
+      const total = entry[1].map((pair) => pair.amount);
+      transformedArray.push({ date: entry[0], amount: total });
+    });
+
+    return transformedArray;
+  };
 
   useEffect(() => {
     setTotal(gigs.reduce((total, gig) => total + Number(gig.amount), 0));
@@ -59,23 +80,23 @@ const App = () => {
         <Text>Bezier Line Chart</Text>
         <LineChart
           data={{
-            labels: ["Mon", "Tues", "Wed", "Thurs", "Fri"],
+            labels: getDates(),
             datasets: [
               {
-                data: [gigs[0].amount, gigs[1].amount],
+                data: getAmounts(),
               },
             ],
           }}
           width={Dimensions.get("window").width} // from react-native
           height={220}
           yAxisLabel="$"
-          // yAxisSuffix="k"
+          yAxisSuffix="k"
           yAxisInterval={1} // optional, defaults to 1
           chartConfig={{
             backgroundColor: "#e26a00",
             backgroundGradientFrom: "#40C8F5",
             backgroundGradientTo: "#1170C2",
-            decimalPlaces: 1, // optional, defaults to 2dp
+            decimalPlaces: null, // optional, defaults to 2dp
             color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
             labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
             style: {
