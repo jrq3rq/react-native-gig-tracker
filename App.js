@@ -18,7 +18,7 @@ const App = () => {
   const [amount, setAmount] = useState("");
   const [total, setTotal] = useState(0);
   const [data, setData] = useState([
-    { date: moment().format("LL"), amount: 200 },
+    { date: moment().format("LL"), amount: 2000 },
     { date: moment().subtract(1, "days").format("LL"), amount: 2500 },
     { date: moment().subtract(1, "days").format("LL"), amount: 3500 },
     { date: moment().subtract(1, "days").format("LL"), amount: 4500 },
@@ -35,7 +35,7 @@ const App = () => {
   const [gigs, setGigs] = useState([
     {
       description: "Freelance full build",
-      amount: 999.99,
+      amount: 499.99,
       timestamp: new Date(),
     },
   ]);
@@ -46,12 +46,32 @@ const App = () => {
     const transformedArray = [];
 
     Object.entries(groupedData).forEach((entry) => {
-      const total = entry[1].map((pair) => pair.amount);
+      const total = entry[1].reduce((total, pair) => total + pair.amount, 0);
       transformedArray.push({ date: entry[0], amount: total });
     });
 
     return transformedArray;
   };
+
+  //   DEBUG (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+  //   App.js:57 the dates!!! (6) ["November 6, 2020", "November 5, 2020", "November 5, 2020", "November 5, 2020", "November 4, 2020", "November 4, 2020"]
+  // App.js:58 the amounts!!! (6) [200, 2500, 3500, 4500, 5500, 5500]
+  // App.js:59 the grouped values are.... (3) [Array(2), Array(2), Array(2)]
+  // App.js:63 the TOTAL grouped values (3) [{…}, {…}, {…}]
+  // App.js:56 DEBUG (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+  // App.js:57 the dates!!! (6) ["November 6, 2020", "November 5, 2020", "November 5, 2020", "November 5, 2020", "November 4, 2020", "November 4, 2020"]
+  // App.js:58 the amounts!!! (6) [200, 2500, 3500, 4500, 5500, 5500]
+  // App.js:59 the grouped values are.... (3) [Array(2), Array(2), Array(2)]
+  // App.js:63 the TOTAL grouped values (3) [{…}, {…}, {…}]
+
+  console.log("DEBUG", data);
+  console.log("the dates!!!", getDates());
+  console.log("the amounts!!!", getAmounts());
+  console.log(
+    "the grouped values are....",
+    Object.entries(groupBy(data, "date"))
+  );
+  console.log("the TOTAL grouped values", transformData(groupBy(data, "date")));
 
   useEffect(() => {
     setTotal(gigs.reduce((total, gig) => total + Number(gig.amount), 0));
