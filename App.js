@@ -11,20 +11,28 @@ import {
 } from "react-native";
 import Todo from "./Todo";
 import { LineChart, BarChart } from "react-native-chart-kit";
-import moment from "moment";
+import * as moment from "moment";
 
 const App = () => {
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [total, setTotal] = useState(0);
   const [data, setData] = useState([
-    { date: moment().format("LL"), amount: 2000 },
-    { date: moment().subtract(1, "days").format("LL"), amount: 2500 },
-    { date: moment().subtract(1, "days").format("LL"), amount: 3500 },
-    { date: moment().subtract(1, "days").format("LL"), amount: 4500 },
-    { date: moment().subtract(2, "days").format("LL"), amount: 5500 },
-    { date: moment().subtract(2, "days").format("LL"), amount: 5500 },
+    { date: moment().format("dd"), amount: 2000 },
+    { date: moment().subtract(1, "days").format("dd"), amount: 2500 },
+    { date: moment().subtract(1, "days").format("dd"), amount: 3500 },
+    { date: moment().subtract(1, "days").format("dd"), amount: 4500 },
+    { date: moment().subtract(2, "days").format("dd"), amount: 8500 },
+    { date: moment().subtract(3, "days").format("dd"), amount: 3500 },
+    { date: moment().subtract(5, "days").format("dd"), amount: 2500 },
+    { date: moment().subtract(5, "days").format("dd"), amount: 1500 },
   ]);
+
+  // const [transformedData, setTransformedData] = useEffect([]);
+
+  // useEffect(() => {
+  //   setTransformedData(transformedData(groupBy(data, "data")));
+  // }, [data]);
 
   const groupBy = (array, key) =>
     array.reduce((rv, x) => {
@@ -47,10 +55,17 @@ const App = () => {
 
     Object.entries(groupedData).forEach((entry) => {
       const total = entry[1].reduce((total, pair) => total + pair.amount, 0);
-      transformedArray.push({ date: entry[0], amount: total });
+      transformedArray.push({
+        date: moment(entry[0]).format("dd"),
+        amount: total,
+      });
     });
 
-    return transformedArray;
+    const sortedArray = transformedArray.sort((a, b) =>
+      moment(a["date"]).diff(moment(a["date"]))
+    );
+
+    return sortedArray;
   };
 
   //   DEBUG (6) [{…}, {…}, {…}, {…}, {…}, {…}]
