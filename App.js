@@ -21,13 +21,15 @@ const App = () => {
     { date: moment().format("LL"), amount: 2000 },
     { date: moment().subtract(1, "days").format("LL"), amount: 2500 },
     { date: moment().subtract(1, "days").format("LL"), amount: 3500 },
-    { date: moment().subtract(1, "days").format("LL"), amount: 4500 },
-    { date: moment().subtract(2, "days").format("LL"), amount: 8500 },
-    { date: moment().subtract(3, "days").format("LL"), amount: 3500 },
-    { date: moment().subtract(5, "days").format("LL"), amount: 2500 },
-    { date: moment().subtract(5, "days").format("LL"), amount: 1500 },
-    { date: moment().subtract(3, "days").format("LL"), amount: 7500 },
-    { date: moment().subtract(3, "days").format("LL"), amount: 7500 },
+    { date: moment().subtract(1, "days").format("LL"), amount: 3500 },
+    { date: moment().subtract(1, "days").format("LL"), amount: 3500 },
+    { date: moment().subtract(7, "days").format("LL"), amount: 3500 },
+    { date: moment().subtract(6, "days").format("LL"), amount: 3500 },
+    { date: moment().subtract(5, "days").format("LL"), amount: 3500 },
+    { date: moment().subtract(4, "days").format("LL"), amount: 3500 },
+    { date: moment().subtract(3, "days").format("LL"), amount: 4500 },
+    { date: moment().subtract(2, "days").format("LL"), amount: 5500 },
+    { date: moment().subtract(2, "days").format("LL"), amount: 5500 },
   ]);
 
   const [transformedData, setTransformedData] = useState([]);
@@ -57,16 +59,16 @@ const App = () => {
     Object.entries(groupedData).forEach((entry) => {
       const total = entry[1].reduce((total, pair) => total + pair.amount, 0);
       transformedArray.push({
-        date: entry[0],
+        date: moment(entry[0]).format("DD/MM"),
         amount: total,
       });
     });
 
-    // const sortedArray = transformedArray.sort((a, b) =>
-    //   moment(a["date"]).diff(moment(a["date"]))
-    // );
+    const sortedArray = transformedArray.sort((a, b) =>
+      moment(a["date"]).diff(moment(b["date"]))
+    );
 
-    return transformedArray;
+    return sortedArray;
   };
 
   console.log("DEBUG", data);
@@ -88,7 +90,14 @@ const App = () => {
       {
         description: description,
         amount: amount,
-        timestamp: new Date(),
+      },
+    ]);
+
+    setData([
+      ...data,
+      {
+        date: moment().format("LL"),
+        amount: Number(amount),
       },
     ]);
 
@@ -115,7 +124,7 @@ const App = () => {
           width={Dimensions.get("window").width} // from react-native
           height={220}
           yAxisLabel="$"
-          yAxisSuffix="k"
+          // yAxisSuffix="k"
           yAxisInterval={1} // optional, defaults to 1
           chartConfig={{
             backgroundColor: "#e26a00",
